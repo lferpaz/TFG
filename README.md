@@ -2,7 +2,7 @@
 
 This repository contains the development of the final degree project "Detection of modified images or videos using Neural Networks" for the Computer Engineering degree at the Autonomous University of Barcelona.
 
-## Table of contents
+## :abacus: Table of contents
 
 - [Overview](#overview)
 - [Repository structure](#repository-structure)
@@ -11,7 +11,7 @@ This repository contains the development of the final degree project "Detection 
 - [Acknowledgements](#acknowledgements)
 - [License](#license)
 
-## Overview
+## :eye: Overview
 
 The main objective of this project is the development of a system for detecting modified images or videos using neural networks. This system can be used to identify tampered media, which is an important task in fields such as digital forensics, journalism, and social media analysis.
 
@@ -45,7 +45,7 @@ If you have any questions or feedback about the project, please feel free to con
 
 I would like to thank my supervisor [supervisor-name] for his/her guidance and support throughout the project. I would also like to thank [colleagues-names] for their valuable feedback and suggestions.
 
-## License
+## :warning: License
 
 This project is licensed under the [license-name] license. For more information, please see the LICENSE file in the root directory of the repository.
 
