@@ -17,7 +17,7 @@ The main objective of this project is the development of a system for detecting 
 
 The system is developed using Python and TensorFlow, and it is based on state-of-the-art deep learning architectures such as convolutional neural networks and recurrent neural networks.
 
-## Repository structure
+## :key: Repository structure
 
 The repository is organized as follows:
 
@@ -26,7 +26,7 @@ The repository is organized as follows:
 - `docs/`: contains the documentation of the project, including the report, slides, and user manual.
 - `tests/`: contains the testing scripts and results for the system.
 
-## Getting started
+## 	:toolbox: Getting Started
 
 To run the system, you need to install Python 3 and TensorFlow. You can use the following commands to install the required packages:
 pip install tensorflow
@@ -37,11 +37,11 @@ python src/main.py
 
 For more detailed instructions on how to install and run the system, please refer to the user manual in the `docs/` directory.
 
-## Contact
+## :handshake: Contact
 
 If you have any questions or feedback about the project, please feel free to contact me at [your-email-address]. I am happy to discuss any aspect of the project with you.
 
-## Acknowledgements
+## :gem: Acknowledgements
 
 I would like to thank my supervisor [supervisor-name] for his/her guidance and support throughout the project. I would also like to thank [colleagues-names] for their valuable feedback and suggestions.
 
