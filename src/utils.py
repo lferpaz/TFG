@@ -30,19 +30,3 @@ def plot_images(images,labels,size):
         plt.axis("off")
     plt.show()
 
-def generate_masks(dir_path, image_size=(64, 64)):
-    manip_images = glob.glob(os.path.join(dir_path, "Tp", "*.jpg"))
-
-    masks = []
-    for manip_image in manip_images:
-        # Cargar la imagen y redimensionarla
-        image = cv2.imread(manip_image, cv2.IMREAD_GRAYSCALE)
-        image = cv2.resize(image, image_size)
-
-        # Threshold para convertir a imagen binaria
-        ret, thresh = cv2.threshold(image, 127, 255, cv2.THRESH_BINARY)
-
-        # Agregar a la lista de máscaras
-        masks.append(thresh)
-
-    return np.array(masks)
