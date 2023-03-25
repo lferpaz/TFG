@@ -1,0 +1,9 @@
+Realizame un codigo en Python que a partir de que se le pase el path de training y el path de Test donde se encuentran las imagenes, realize lo siguiente, ten en cuenta que se desean mostrar las imagenes con las modificaciones hecha al final: Importar las bibliotecas necesarias, como Numpy y OpenCV, que son comúnmente utilizadas para procesamiento de imágenes.
+
+-Cargar la imagen de entrada y convertirla a formato YCbCr.
+-Realizar la preprocesamiento de la imagen, que puede incluir la decorrelación y la transformada de coseno discreta de bloque (BDCT) no superpuesta.
+-Aplicar el método de umbralización avanzado para extraer características de la imagen en cada uno de los tres canales de componente de crominancia (Cr, Y y Cb).
+-Combinar las características resultantes de los tres canales y utilizarlas como características discriminativas para la detección y clasificación de la manipulación de imágenes.
+-Utilizar técnicas de aprendizaje automático como el kernel RBF o CNN para mejorar la precisión de la clasificación y realizar la validación cruzada k-fold para evaluar el rendimiento del modelo
+
+La idea es que tenga de entrada las diferentes imagenes de las carpetas de Training y test, donde a su vez tenemos dos carpetas, una con las imagenes autenticas y otra con las manipulada,la idea es tratar cada imagen(RGB), separar cada canal de Y,Cb,Cr hacer un pre-procesamiento, despues un Enhanced Threshold por cada canal y finalmente unirlo en un vector para realizar el CNN para decir si la imagen es Autentica o Manipulada.
