@@ -115,7 +115,7 @@ def model(X_train, y_train, X_val, y_val, X_test, y_test):
     print ("Crear modelo CNN")
     model = Sequential()
 
-    model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', padding='same', input_shape=(128, 128, 3)))
+    model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', padding='same', input_shape=(256, 256, 3)))
     model.add(BatchNormalization())
 
     model.add(Conv2D(64, (3, 3), activation='relu', kernel_regularizer=l2(0.1)))
@@ -165,6 +165,10 @@ def model(X_train, y_train, X_val, y_val, X_test, y_test):
     print("Pérdida de prueba:", test_loss)
     print("Precisión de prueba:", test_acc)
 
+    # Guardar modelo
+    print("Guardar modelo")
+    model.save('model'+str(val_acc)+'.h5')
+
     return model
 
 
@@ -172,20 +176,20 @@ if __name__ == '__main__':
 
     imput_shape = (244,244)
     # Cargar las imágenes auténticas 
-    for file_path in glob.glob('data/dataset/data/CASIA2/Au/*.jpg') [0:60]:
+    for file_path in glob.glob('data/dataset/data/CASIA2/Au/*.jpg') [0:6000]:
         img = cv2.imread(file_path)
         if img is not None:
             #antes de agregar la imagen la ponemos todas en el mismo tamaño
-            img = cv2.resize(img, (128, 128))
+            img = cv2.resize(img, (256, 256))
             X.append(img)
             y.append(0)
 
     # Cargar las imágenes falsas 
-    for file_path in glob.glob('data/dataset/data/CASIA2/Tp/*.jpg') [0:60]:
+    for file_path in glob.glob('data/dataset/data/CASIA2/Tp/*.jpg') [0:6000]:
         img = cv2.imread(file_path)
         if img is not None:
             #antes de agregar la imagen la ponemos todas en el mismo tamaño
-            img = cv2.resize(img, (128, 128))
+            img = cv2.resize(img, (256, 256))
             X.append(img)
             y.append(1)
 
