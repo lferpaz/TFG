@@ -63,8 +63,9 @@ def copy_object(source_img, source_boxes, dest_img):
     dest_img.paste(obj, (dest_x, dest_y))
 
     #devolvemos la imagen, la region de destino donde ha sido pegado el objeto 
+    boxes = [dest_x, dest_y, dest_x + obj.width, dest_y + obj.height]
     
-    return dest_img, (dest_x, dest_y, dest_x + obj.width, dest_y + obj.height)
+    return dest_img, boxes
     
 def compare_images(img1,img2,img3):
     '''
@@ -87,7 +88,8 @@ if __name__ == '__main__':
     original_path = 'data/dataset/ImageNet/tiny-imagenet-200/tiny-imagenet-200/train/'
 
     #Crear dataset con las siguientes columnas: Nombre de la imagen original, coordenadas del objeto, imagen donde se ha pegado el objeto, coordenadas donde se ha pegado el objeto.
-    dataset = pd.DataFrame(columns=['original image', 'object coordinates', 'pasted image', 'pasted coordinates'])
+    dataset = pd.DataFrame(columns=['image_original','image_paste', 'boxes_paste'])
+
 
     #Hacer para todas las carpetas
     for folder in os.listdir(original_path):
@@ -106,11 +108,15 @@ if __name__ == '__main__':
         # Cargamos las imagenes originales
         images = glob.glob(original_path + folder + '/images/*.jpeg')
 
+        original_imgs = []
+        copy_imgs = []
+        boxes_objects = []
+        
         for img_file in images:
             # Leemos la imagen original
             img_original = Image.open(img_file)
 
-            # Seleccionamos una imagen de fondo aleatoria
+            # Seleccionamos una imagen de forma aleatoria
             img_paste_file = random.choice(images)
             img_paste = Image.open(img_paste_file)
 
@@ -121,22 +127,31 @@ if __name__ == '__main__':
             #Obtenemos el indice de la imagen original
             index = img_file.split('_')[-1].split('.')[0]
 
-            dataset['object coordinates'] =  boxes_[int(index)]
-
+            # Pegamos el objeto en la imagen donde vamos a pegar el objeto
             img_modificada, boxes = copy_object(img_original, boxes_[int(index)], img_paste)
-            dataset['pasted coordinates'] = boxes
+            
 
             # Guardamos la imagen el nombre de la imagen donde se ha pegado el objeto + _CP.jpeg
             img_modificada.save(generated_path + folder + '_' + str(index) + '_CP.jpeg')
 
-            #Generamos el dataset y lo guardamos en Excel para poder verlo, guardamos el nombre de la imagen original,la coordenadas del objeto, la imagen donde se ha pegado el objeto y las coordenadas donde se ha pegado el objeto
-            dataset['original image'] = img_file
+            #Guardamos la ruta de la imagen original, la imagen pegada y las cajas donde se encuentra el objeto
+            original_imgs.append(img_file)
+            copy_imgs.append(img_paste_file)
+            boxes_objects.append(boxes)
             
-            dataset['pasted image'] = generated_path + folder + '_' + str(index) + '_CP.jpeg'
-            
+
         
+
+        #agregamos los datos al dataset
+        dataset = dataset.append(pd.DataFrame({'image_original':original_imgs, 'image_paste':copy_imgs, 'boxes_paste':boxes_objects}), ignore_index=True)
+
         print("Imagenes generadas para la carpeta: ----> ", folder)
-        #guardamos el dataset en Excel
+
+    #Guardamos el dataset
+    dataset.to_csv('data/dataset/ImageNet/tiny-imagenet-200-copiado-pegado/dataset.csv', index=False)
+
+    
+    
 
 
 

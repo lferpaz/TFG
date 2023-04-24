@@ -3,8 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import glob
 import os
+import seaborn as sns
 
-from skimage import color, util, io, img_as_float
 from scipy import fftpack
 
 def read_folders(path):
@@ -47,24 +47,6 @@ def convert_imgs_to_YCrCb(images):
     return images_YCrCb
 
 
-
-def preprocess_images(images):
-    """
-    Realiza el preprocesamiento de una lista de imágenes.
-    """
-    preprocessed_images = []
-    for image in images:
-        # Convertir la imagen a YCbCr
-        ycbcr_image = color.rgb2ycbcr(image)
-        # Dividir la imagen en bloques de 8x8
-        blocks = util.view_as_blocks(ycbcr_image[:, :, 0], block_shape=(8, 8))
-        # Aplicar la transformada de coseno discreta en cada bloque
-        dct_blocks = fftpack.dct(fftpack.dct(blocks, axis=2, norm='ortho'), axis=3, norm='ortho')
-        # Agregar la imagen preprocesada a la lista
-        preprocessed_images.append(dct_blocks)
-    return preprocessed_images
-
-
 def plot_processed_images(processed_images, n, figsize=(20,20)):
     """
     Función para plotear n imágenes preprocesadas en el mismo plot.
@@ -86,8 +68,6 @@ def plot_processed_images(processed_images, n, figsize=(20,20)):
     plt.show()
 
 
-
-
 def plot_image(image):
     '''
     Funcion para plotear una imagen
@@ -104,4 +84,31 @@ def plot_images(images, n, figsize=(20,20)):
     for i in range(n):
         axs[i].imshow(images[i])
         axs[i].axis("off")
+    plt.show()
+
+def show_ycc_channels(y_image, cb_image, cr_image):
+    # Create a figure with 3 subplots
+    fig, axs = plt.subplots(1, 3, figsize=(12, 4))
+
+    # Display Y, Cb, and Cr images in subplots
+    axs[0].imshow(y_image, cmap='gray')
+    axs[0].set_title('Y Channel')
+    axs[1].imshow(cb_image, cmap='gray')
+    axs[1].set_title('Cb Channel')
+    axs[2].imshow(cr_image, cmap='gray')
+    axs[2].set_title('Cr Channel')
+
+    # Adjust subplot spacing
+    fig.tight_layout()
+
+    # Show the plot
+    plt.show()
+
+def show_cm(cm):
+    # Representamos la matriz de confusión
+    plt.figure(figsize=(5,5))
+    sns.heatmap(cm, annot=True, fmt="d")
+    plt.title('Confusion matrix')
+    plt.ylabel('True label')
+    plt.xlabel('Predicted label')
     plt.show()
