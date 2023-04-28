@@ -322,8 +322,6 @@ def preparete_image_ela(image_path, image_size):
 def preparete_highlightst_features(image_path, image_size):
     return np.array(highlight_features(image_path).resize(image_size)).flatten() / 255.0
 
-    
-
 def preparete_image_sovel(image_path, image_size):
     return np.array(convert_to_sobel_image(image_path, image_size)).flatten() / 255.0
 
