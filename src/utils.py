@@ -112,3 +112,58 @@ def show_cm(cm):
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
     plt.show()
+
+def detectar_alteraciones(img):
+    # Convertir la imagen a escala de grises
+    img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    # Aplicar filtro de Canny para detectar bordes
+    edges = cv2.Canny(img_gray, 100, 200)
+
+    # Encontrar contornos en la imagen de bordes
+    contours, hierarchy = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    # Crear una imagen vacía para resaltar las áreas alteradas
+    alteraciones = np.zeros(img.shape, np.uint8)
+
+    # Iterar a través de los contornos y resaltar las áreas de la imagen que parecen estar alteradas
+    for cnt in contours:
+        # Calcular el área del contorno
+        area = cv2.contourArea(cnt)
+
+        # Ignorar los contornos que son demasiado pequeños o demasiado grandes
+        if area < 50 or area > 500:
+            continue
+
+        # Dibujar el contorno en la imagen de las alteraciones
+        cv2.drawContours(alteraciones, [cnt], 0, (0, 0, 255), 2)
+
+    return alteraciones
+
+
+def generate_mask(original_image_path, manipulated_image_path, size, reverse_order=False):
+    # Leer las imágenes originales y manipuladas
+
+    original_image = cv2.imread(original_image_path, cv2.IMREAD_GRAYSCALE)
+    manipulated_image = cv2.imread(manipulated_image_path, cv2.IMREAD_GRAYSCALE)
+   
+    # Redimensionar las imágenes al tamaño especificado
+    original_image = cv2.resize(original_image, size)
+    manipulated_image = cv2.resize(manipulated_image, size)
+
+    # Calcular la máscara de diferencias
+    mask = cv2.absdiff(original_image, manipulated_image)
+
+    # Binarizar la máscara para obtener una imagen en blanco y negro
+    _, mask = cv2.threshold(mask, 0, 255, cv2.THRESH_BINARY)
+
+    # Aplicar un primer filtro de apertura para eliminar los pequeños detalles blancos
+    kernel1 = np.ones((7, 7), np.uint8)
+    mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel1)
+
+    # Aplicar un segundo filtro de apertura para reducir aún más el número de puntos blancos
+    kernel2 = np.ones((7, 7), np.uint8)
+    mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel2)
+
+    # Devolver la máscara
+    return mask

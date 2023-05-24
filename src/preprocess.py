@@ -8,6 +8,8 @@ import cv2
 from scipy.fftpack import dct
 from scipy import ndimage
 from scipy import fftpack
+import glob
+import os
 
 
 def ela_image(path, quality=98):
@@ -24,6 +26,7 @@ def ela_image(path, quality=98):
     scale = 255.0 / max_diff 
     ela_image = ImageEnhance.Brightness(ela_image).enhance(scale)  
     return ela_image
+
 
 
 
@@ -215,8 +218,6 @@ def plot_dwt2_from_file(path: str,img_size):
 
 
 
-
-
 ################################### Enfoque con ROI ###################################
 
 def detect_roi(img):
@@ -316,7 +317,7 @@ def preparete_image(image_path, image_size):
     return np.array(convert_to_ela_image(image_path, 90).resize(image_size)).flatten() / 255.0
 
 
-def preparete_image_ela(image_path, image_size):
+def preparete_image_ela(image_path, image_size = (128, 128)):
     return np.array(ela_image(image_path, 98).resize(image_size)).flatten() / 255.0
 
 def preparete_highlightst_features(image_path, image_size):
@@ -341,4 +342,70 @@ def preparete_image_canny(image_path, image_size):
 
 
 
+############################ Model tampered_images ############################
 
+def create_dataset_for_tampered_images(path_tampered,image_size):
+    x = []
+    y = []
+
+    for filename in glob.glob(os.path.join(path_tampered, '*.*')):
+        img_name = filename.split('\\')[-1]
+        if  img_name.startswith('Tp_S_'):
+            x.append(preparete_image_ela(filename, (image_size[0], image_size[1])))
+            y.append(1)
+        elif  img_name.startswith('Tp_D_'):
+            x.append(preparete_image_ela(filename, (image_size[0], image_size[1])))
+    return np.array(x), y
+
+def apply_texture_filter(image_path):
+    # Leemos la imagen de entrada
+    img = cv2.imread(image_path)
+
+    # Aplicamos un filtro de mediana para suavizar la imagen
+    blur = cv2.medianBlur(img, 7)
+
+    # Restamos la imagen suavizada de la imagen original para resaltar las texturas
+    texture = cv2.absdiff(img, blur)
+
+    return Image.fromarray(texture)
+
+
+
+def apply_difference_of_gaussians(image_path):
+    # carga la imagen y conviértela a escala de grises
+    img = cv2.imread(image_path)
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    # Aplica el filtro gaussiano con kernel de 5 y sigma de 0
+    gauss1 = cv2.GaussianBlur(gray, (5, 5), 0)
+
+    # Aplica el filtro gaussiano con kernel de 15 y sigma de 0
+    gauss2 = cv2.GaussianBlur(gray, (15, 15), 0)
+
+    # Resta las dos imágenes para obtener el mapa de características
+    dog = cv2.absdiff(gauss1, gauss2)
+
+    # Normaliza los valores de píxel entre 0 y 255 y convierte el mapa de características en una imagen
+    dog_norm = cv2.normalize(dog, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8UC1)
+    dog_img = cv2.cvtColor(dog_norm, cv2.COLOR_GRAY2BGR)
+
+    # Aplica un umbral para resaltar aún más las diferencias
+    thresh = cv2.threshold(dog_norm, 50, 255, cv2.THRESH_BINARY)[1]
+
+    # Aplica un filtro de mediana para reducir el ruido y mejorar los bordes
+    median = cv2.medianBlur(thresh, 3)
+
+    '''# Encuentra los contornos y dibuja un rectángulo alrededor de ellos
+    contours, hierarchy = cv2.findContours(median, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    for cnt in contours:
+        (x, y, w, h) = cv2.boundingRect(cnt)
+        cv2.rectangle(dog_img, (x, y), (x + w, y + h), (0, 0, 255), 2)'''
+
+    return Image.fromarray(dog_img)
+
+
+def preparete_image_texture(image_path, image_size):
+    return np.array(apply_texture_filter(image_path).resize(image_size)).flatten() / 255.0
+
+def preparete_image_gaussians(image_path, image_size):
+    return np.array(apply_difference_of_gaussians(image_path).resize(image_size)).flatten() / 255.0
