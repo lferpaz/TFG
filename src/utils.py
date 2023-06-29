@@ -35,6 +35,8 @@ def read_images(path):
     for image in glob.glob(path):
         images.append(cv2.imread(image))
     return images
+    
+
 
 def convert_imgs_to_YCrCb(images):
     '''
@@ -168,7 +170,10 @@ def generate_mask(original_image_path, manipulated_image_path, size, reverse_ord
     return mask
 
 
+
+
 ### Metricas de interes para el modelo ###
+
 
 def plot_confusion_matrix(y_true, y_pred, classes):
     # Calcular la matriz de confusión
@@ -245,5 +250,3 @@ def plot_roc_curve(y_true, y_scores):
     
     # Mostrar la gráfica
     plt.show()
-
-
