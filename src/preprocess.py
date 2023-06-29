@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-np.random.seed(2)
-from PIL import Image, ImageChops, ImageEnhance,ImageFilter, ImageOps
+from PIL import Image, ImageChops, ImageEnhance, ImageFilter, ImageOps
 from io import BytesIO
 import pywt
 import cv2
@@ -11,43 +10,47 @@ from scipy import fftpack
 import glob
 import os
 
+np.random.seed(2)
 
 def ela_image(path, quality=98):
-    temp_filename = 'temp_file_name.jpg'
-    ela_filename = 'temp_ela.png' 
-    image = Image.open(path).convert('RGB')
-    image.save(temp_filename, 'JPEG', quality = quality)
-    temp_image = Image.open(temp_filename)
-    ela_image = ImageChops.difference(image, temp_image)
-    extrema = ela_image.getextrema()
-    max_diff = max([ex[1] for ex in extrema])
+    temp_filename = 'temp_file_name.jpg'  # Nombre temporal para el archivo JPEG de la imagen
+    ela_filename = 'temp_ela.png'  # Nombre de archivo para la imagen ELA
+    
+    image = Image.open(path).convert('RGB')  # Abrir la imagen y convertirla a modo RGB
+    image.save(temp_filename, 'JPEG', quality=quality)  # Guardar la imagen como JPEG con la calidad especificada
+    
+    temp_image = Image.open(temp_filename)  # Abrir la imagen temporal
+    ela_image = ImageChops.difference(image, temp_image)  # Obtener la imagen ELA calculando la diferencia de píxeles entre la imagen original y la imagen temporal
+    
+    extrema = ela_image.getextrema()  # Obtener los valores extremos de la imagen ELA
+    max_diff = max([ex[1] for ex in extrema])  # Obtener el valor máximo de diferencia de los valores extremos
     if max_diff == 0:
-        max_diff = 1
-    scale = 255.0 / max_diff 
-    ela_image = ImageEnhance.Brightness(ela_image).enhance(scale)  
-    return ela_image
-
-
+        max_diff = 1  # Si la diferencia máxima es cero, se establece en uno para evitar divisiones por cero
+    
+    scale = 255.0 / max_diff  # Calcular la escala para ajustar el brillo de la imagen ELA
+    ela_image = ImageEnhance.Brightness(ela_image).enhance(scale)  # Ajustar el brillo de la imagen ELA según la escala calculada
+    
+    return ela_image 
 
 
 def convert_to_ela_image(path, quality):
-    with Image.open(path).convert('RGB') as image:
-        with BytesIO() as image_bytes:
-            image.save(image_bytes, 'JPEG', quality=quality)
-            temp_image = Image.open(image_bytes)
+    with Image.open(path).convert('RGB') as image:  # Abrir la imagen y convertirla a modo RGB 
+        with BytesIO() as image_bytes:  # Crear un objeto BytesIO para guardar la imagen temporalmente
+            image.save(image_bytes, 'JPEG', quality=quality)  # Guardar la imagen en el objeto BytesIO como JPEG con la calidad especificada
+            temp_image = Image.open(image_bytes)  # Abrir la imagen temporal desde el objeto BytesIO
 
-            ela_image = ImageChops.difference(image, temp_image)
+            ela_image = ImageChops.difference(image, temp_image)  # Calcular la imagen ELA tomando la diferencia de píxeles entre la imagen original y la imagen temporal
 
-            extrema = ela_image.getextrema()
-            max_diff = max([ex[1] for ex in extrema])
+            extrema = ela_image.getextrema()  # Obtener los valores extremos de la imagen ELA
+            max_diff = max([ex[1] for ex in extrema])  # Obtener el valor máximo de diferencia de los valores extremos
             if max_diff == 0:
-                max_diff = 1
-            scale = 255.0 / max_diff
+                max_diff = 1  # Si la diferencia máxima es cero, se establece en uno para evitar divisiones por cero
 
-            ela_image = ImageEnhance.Brightness(ela_image).enhance(scale)
+            scale = 255.0 / max_diff  # Calcular la escala para ajustar el brillo de la imagen ELA
+            ela_image = ImageEnhance.Brightness(ela_image).enhance(scale)  # Ajustar el brillo de la imagen ELA según la escala calculada
 
-            return ela_image
-        
+            return ela_image  
+  
 
 def discrete_wavelet_transform(image_path, size):
     # Cargar imagen y ajustar el tamaño
@@ -84,7 +87,6 @@ def bdct(image_path):
     
     # Devolver los coeficientes transformados
     return Image.fromarray(bdct)
-
 
 
 def decorrelate_image(image_path):
@@ -221,15 +223,6 @@ def plot_dwt2_from_file(path: str,img_size):
 ################################### Enfoque con ROI ###################################
 
 def detect_roi(img):
-    """
-    Detecta la región de interés (ROI) de una imagen de forma automática.
-
-    Parameters:
-    img (numpy.ndarray): La imagen a analizar.
-
-    Returns:
-    numpy.ndarray: La ROI de la imagen.
-    """
     # Convertir la imagen a escala de grises
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
@@ -263,10 +256,10 @@ def detect_roi(img):
     else:
         roi = img
       
-
     # normalizar la ROI y devolverla
     roi = roi / 255.0
     return roi
+
 
 def get_ycc_channels(image_path):
     # Load image and convert to YCbCr color space
@@ -284,6 +277,7 @@ def get_ycc_channels(image_path):
     cr_image = Image.fromarray(cr_channel, mode='L')
     
     return y_image, cb_image, cr_image
+
 
 def analyze_noise_patterns(image_path):
     # Carga la imagen y la convierte a una matriz NumPy
@@ -309,13 +303,13 @@ def analyze_noise_patterns(image_path):
     return noise_pattern_image
 
 
+################################### Preparete data ###################################
+
 def preparete_analyze_noise_patterns(image_path, image_size):
     return np.array(analyze_noise_patterns(image_path).resize(image_size)).flatten() / 255.0
 
-
 def preparete_image(image_path, image_size):
     return np.array(convert_to_ela_image(image_path, 90).resize(image_size)).flatten() / 255.0
-
 
 def preparete_image_ela(image_path, image_size = (128, 128)):
     return np.array(ela_image(image_path, 98).resize(image_size)).flatten() / 255.0
@@ -338,74 +332,3 @@ def preparete_image_enhance(image_path, image_size):
 def preparete_image_canny(image_path, image_size):
     return np.array(canny_image(image_path).resize(image_size)).flatten() / 255.0
 
-
-
-
-
-############################ Model tampered_images ############################
-
-def create_dataset_for_tampered_images(path_tampered,image_size):
-    x = []
-    y = []
-
-    for filename in glob.glob(os.path.join(path_tampered, '*.*')):
-        img_name = filename.split('\\')[-1]
-        if  img_name.startswith('Tp_S_'):
-            x.append(preparete_image_ela(filename, (image_size[0], image_size[1])))
-            y.append(1)
-        elif  img_name.startswith('Tp_D_'):
-            x.append(preparete_image_ela(filename, (image_size[0], image_size[1])))
-    return np.array(x), y
-
-def apply_texture_filter(image_path):
-    # Leemos la imagen de entrada
-    img = cv2.imread(image_path)
-
-    # Aplicamos un filtro de mediana para suavizar la imagen
-    blur = cv2.medianBlur(img, 7)
-
-    # Restamos la imagen suavizada de la imagen original para resaltar las texturas
-    texture = cv2.absdiff(img, blur)
-
-    return Image.fromarray(texture)
-
-
-
-def apply_difference_of_gaussians(image_path):
-    # carga la imagen y conviértela a escala de grises
-    img = cv2.imread(image_path)
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-    # Aplica el filtro gaussiano con kernel de 5 y sigma de 0
-    gauss1 = cv2.GaussianBlur(gray, (5, 5), 0)
-
-    # Aplica el filtro gaussiano con kernel de 15 y sigma de 0
-    gauss2 = cv2.GaussianBlur(gray, (15, 15), 0)
-
-    # Resta las dos imágenes para obtener el mapa de características
-    dog = cv2.absdiff(gauss1, gauss2)
-
-    # Normaliza los valores de píxel entre 0 y 255 y convierte el mapa de características en una imagen
-    dog_norm = cv2.normalize(dog, None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8UC1)
-    dog_img = cv2.cvtColor(dog_norm, cv2.COLOR_GRAY2BGR)
-
-    # Aplica un umbral para resaltar aún más las diferencias
-    thresh = cv2.threshold(dog_norm, 50, 255, cv2.THRESH_BINARY)[1]
-
-    # Aplica un filtro de mediana para reducir el ruido y mejorar los bordes
-    median = cv2.medianBlur(thresh, 3)
-
-    '''# Encuentra los contornos y dibuja un rectángulo alrededor de ellos
-    contours, hierarchy = cv2.findContours(median, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-    for cnt in contours:
-        (x, y, w, h) = cv2.boundingRect(cnt)
-        cv2.rectangle(dog_img, (x, y), (x + w, y + h), (0, 0, 255), 2)'''
-
-    return Image.fromarray(dog_img)
-
-
-def preparete_image_texture(image_path, image_size):
-    return np.array(apply_texture_filter(image_path).resize(image_size)).flatten() / 255.0
-
-def preparete_image_gaussians(image_path, image_size):
-    return np.array(apply_difference_of_gaussians(image_path).resize(image_size)).flatten() / 255.0

@@ -4,8 +4,9 @@ import matplotlib.pyplot as plt
 import glob
 import os
 import seaborn as sns
-
 from scipy import fftpack
+from sklearn.metrics import roc_curve, auc, confusion_matrix, classification_report, accuracy_score
+from sklearn.metrics import precision_recall_curve
 
 def read_folders(path):
     '''
@@ -34,8 +35,6 @@ def read_images(path):
     for image in glob.glob(path):
         images.append(cv2.imread(image))
     return images
-    
-
 
 def convert_imgs_to_YCrCb(images):
     '''
@@ -167,3 +166,84 @@ def generate_mask(original_image_path, manipulated_image_path, size, reverse_ord
 
     # Devolver la máscara
     return mask
+
+
+### Metricas de interes para el modelo ###
+
+def plot_confusion_matrix(y_true, y_pred, classes):
+    # Calcular la matriz de confusión
+    cm = confusion_matrix(y_true, y_pred)
+
+    # ver la matriz de confusión
+    print(cm)
+
+    # pasar los valores de la matriz de confusión a el equivalente porcentual
+    cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+
+    # mostrar la matriz de confusión
+    plt.figure(figsize=(10, 10))
+    sns.heatmap(cm, annot=True, square=True, cmap=plt.cm.Blues, xticklabels=classes, yticklabels=classes)
+    plt.ylabel('Actual label')
+    plt.xlabel('Predicted label')
+    plt.title('Confusion matrix')
+    plt.show()
+
+
+
+def plot_recall(y_true, y_scores):
+    # Obtener valores de precisión y recall
+    precision, recall, thresholds = precision_recall_curve(y_true, y_scores)
+    #print the mean precision score
+    print('Mean precision score: {0:0.2f}'.format(precision.mean()))
+
+    #print the mean recall score
+    print('Mean recall score: {0:0.2f}'.format(recall.mean()))
+    
+    # Graficar la curva de precisión y recall
+    plt.plot(recall, precision, marker='.')
+    plt.xlabel('Recall')
+    plt.ylabel('Precisión')
+    plt.title('Curva de Precisión y Recall')
+    plt.grid(True)
+    plt.show()
+
+def plot_probabilidad(modelo, X_test, num_clases):
+    classes = ['Fake', 'Real']
+    # Obtener las probabilidades de predicción del modelo
+    probabilidades = modelo.predict(X_test)
+
+    # Graficar la distribución de probabilidades para cada clase
+    for clase in range(num_clases):
+        plt.hist(probabilidades[:, clase], bins=10, alpha=0.5, label=f'Clase {clase}')
+
+    plt.legend(loc='upper right')   
+    plt.xlabel('Probabilidad')
+    plt.ylabel('Frecuencia')
+    plt.title('Distribución de Probabilidades')
+    #poner nombre de las clases
+    plt.xticks(np.arange(num_clases), classes)
+    plt.show()
+
+
+def plot_roc_curve(y_true, y_scores):
+    # Calcular la tasa de falsos positivos, la tasa de verdaderos positivos y los umbrales
+    fpr, tpr, thresholds = roc_curve(y_true, y_scores)
+    
+    # Calcular el área bajo la curva ROC (AUC)
+    roc_auc = auc(fpr, tpr)
+    
+    # Crear la gráfica de la curva ROC
+    plt.figure(figsize=(8, 8))
+    plt.plot(fpr, tpr, color='blue', label='ROC curve (AUC = %0.2f)' % roc_auc)
+    plt.plot([0, 1], [0, 1], color='red', linestyle='--')
+    
+    # Configurar los ejes y la leyenda
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Receiver Operating Characteristic (ROC) Curve')
+    plt.legend(loc='lower right')
+    
+    # Mostrar la gráfica
+    plt.show()
+
+

@@ -1,4 +1,0 @@
-Vigilar como se hacer el resize (interpolacion)
-Ruido (Buscar ruido o intensidad de color), donde las diferencias de los colores de lo pixeles sea mas abrupta 
-, generar imagen de contornos, donde el contorno sea mas visual donde mas diferente sea.
-Realimentar el modelo.
