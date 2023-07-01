@@ -2,7 +2,7 @@
 
 This repository contains the development of the final degree project "Detection of modified images or videos using Neural Networks" for the Computer Engineering degree at the Autonomous University of Barcelona.
 
-## :abacus: Table of contents
+## Table of contents :abacus:
 
 - [Overview](#overview)
 - [Repository structure](#repository-structure)
@@ -11,13 +11,13 @@ This repository contains the development of the final degree project "Detection 
 - [Acknowledgements](#acknowledgements)
 - [License](#license)
 
-## :eye: Overview
+##  Overview 👁️
 
 The main objective of this project is the development of a system for detecting modified images or videos using neural networks. This system can be used to identify tampered media, which is an important task in fields such as digital forensics, journalism, and social media analysis.
 
 The system is developed using Python and TensorFlow, and it is based on state-of-the-art deep learning architectures such as convolutional neural networks and recurrent neural networks.
 
-## :key: Repository structure
+## Repository structure :key:
 
 The repository is organized as follows:
 ### Folder Structure - src 📁
@@ -86,6 +86,35 @@ python src/main.py
 
 
 For more detailed instructions on how to install and run the system, please refer to the user manual in the `docs/` directory.
+## Neural Network Architecture 🏗️
+The neural network architecture consists of the following layers:
+
+- Input layer that receives RGB images of size 128x128 pixels.
+- Two convolutional layers with 32 filters each, using the ReLU activation function.
+- MaxPooling layer to reduce spatial dimension.
+- Dropout layer to prevent overfitting.
+- Two additional sets of convolutional and MaxPooling layers with 128 filters each.
+- Flatten layer to convert the output into a one-dimensional vector.
+- Fully connected layer with 512 neurons and ReLU activation function.
+- Dropout layer to further prevent overfitting.
+- Output layer with 2 neurons and softmax activation function for classifying authentic or manipulated images.
+
+The structure of the neural network is designed to effectively process and extract features from images. It follows the following principles:
+
+- Convolutional layers detect local features.
+- MaxPooling layers reduce spatial dimensions.
+- Dense layers capture high-level relationships in the data.
+- Dropout regularization improves model generalization.
+- Softmax activation in the output layer allows for classification.
+
+This architecture enables the model to effectively classify and identify whether an input image has been modified, as well as identify the area of modification.
+
+<img src="https://github.com/lferpaz/TFG/assets/57639021/35dc3cfa-ed96-4c98-8ce5-1419526d60e6" alt="image" width="150" height="400">
+<img src="https://github.com/lferpaz/TFG/assets/57639021/109b0510-4ed0-4c3a-a61f-2391304b2947" alt="image" width="150" height="400">
+<img src="https://github.com/lferpaz/TFG/assets/57639021/b88889d2-2813-4e9a-8c9f-e85abe2346f6" alt="image" width="150" height="400">
+
+
+
 
 ## Brief Explanation of Model Operation 😃
 
@@ -118,15 +147,15 @@ This process enables the classification of an initial image, determination of po
 
 
 
-## :handshake: Contact
+## Contact :handshake:
 
 If you have any questions or feedback about the project, please feel free to contact me at [your-email-address]. I am happy to discuss any aspect of the project with you.
 
-## :gem: Acknowledgements
+## Acknowledgements :gem:
 
 I would like to thank my supervisor [supervisor-name] for his/her guidance and support throughout the project. I would also like to thank [colleagues-names] for their valuable feedback and suggestions.
 
-## :warning: License
+## License :warning:
 
 This project is licensed under the [license-name] license. For more information, please see the LICENSE file in the root directory of the repository.
 
