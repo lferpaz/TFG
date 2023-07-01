@@ -7,6 +7,8 @@ This repository contains the development of the final degree project "Detection 
 - [Overview](#overview)
 - [Repository structure](#repository-structure)
 - [Getting started](#getting-started)
+- [Repository structure](#neural-network-architecture)
+- [Brief Explanation of Model Operation](#brief-explanation-of-model-operation)
 - [Contact](#contact)
 - [Acknowledgements](#acknowledgements)
 - [License](#license)
@@ -17,7 +19,7 @@ The main objective of this project is the development of a system for detecting 
 
 The system is developed using Python and TensorFlow, and it is based on state-of-the-art deep learning architectures such as convolutional neural networks and recurrent neural networks.
 
-## Repository structure :key:
+## Repository structure 🔑
 
 The repository is organized as follows:
 ### Folder Structure - src 📁
@@ -76,7 +78,7 @@ The following is an explanation of the project's structure and how it has been o
   - The images in this folder consist of a combination of viral images sourced from the internet and personal photos.
   - These images were utilized to evaluate the model's performance and assess its generalization capability.
 
-## 	:toolbox: Getting Started
+## Getting Started 🧰
 
 To run the system, you need to install Python 3 and TensorFlow. You can use the following commands to install the required packages:
 pip install tensorflow
