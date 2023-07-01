@@ -210,5 +210,6 @@ If you have any questions or feedback about the project, please feel free to con
 I would like to thank my supervisor Jordi Serra for her guidance and support throughout the project. I would also like to thank my colleagues for their valuable feedback and suggestions.
 
 ## License :warning:
+This project is licensed under the MIT License. You can find the details of the license in the [LICENSE.md](LICENSE.md) file.
 
 
