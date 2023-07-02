@@ -94,8 +94,6 @@ pip install tensorflow
 Once you have installed the required packages, you can run the system by running the following command:
 python src/main.py
 
-
-For more detailed instructions on how to install and run the system, please refer to the user manual in the `docs/` directory.
 ## Neural Network Architecture 🏗️
 The neural network architecture consists of the following layers:
 
