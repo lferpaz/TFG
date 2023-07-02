@@ -92,7 +92,7 @@ To run the system, you need to install Python 3 and TensorFlow. You can use the 
 pip install tensorflow
 
 Once you have installed the required packages, you can run the system by running the following command:
-python src/main.py
+python src/main.ipynb
 
 ## Neural Network Architecture 🏗️
 The neural network architecture consists of the following layers:
